@@ -1,9 +1,4 @@
-export interface Product {
-  category: string;
-  price: string;
-  stocked: boolean;
-  name: string;
-}
+import { Product } from '../types/products';
 
 export const PRODUCTS: Product[] = [
   { category: 'Fruits', price: '$1', stocked: true, name: 'Apple' },
