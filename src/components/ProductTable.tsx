@@ -10,9 +10,24 @@ interface ProductTableProps {
 }
 
 function ProductTable({ products, filterText, inStockOnly }: ProductTableProps) {
+  // 필터링된 제품 목록 생성
+  const filteredProducts = products.filter(product => {
+    // 재고만 표시하는 옵션이 활성화되어 있고 재고가 없는 경우 필터링
+    if (inStockOnly && !product.stocked) {
+      return false;
+    }
+
+    // 검색어로 필터링 (대소문자 구분 없이)
+    if (!product.name.toLowerCase().includes(filterText.toLowerCase())) {
+      return false;
+    }
+
+    return true;
+  });
+
   // 카테고리별로 제품 그룹화
-  // products 배열을 카테고리별로 그룹화된 객체로 변환
-  const productsByCategory = products.reduce((acc, product) => {
+  // 필터링된 제품 배열을 카테고리별로 그룹화된 객체로 변환
+  const productsByCategory = filteredProducts.reduce((acc, product) => {
     // 해당 카테고리가 아직 없으면 빈 배열로 초기화
     if (!acc[product.category]) {
       acc[product.category] = [];
@@ -32,6 +47,16 @@ function ProductTable({ products, filterText, inStockOnly }: ProductTableProps) 
     ...productsInCategory.map(product => <ProductRow product={product} key={product.name} />),
   ]);
 
+  // 필터링된 결과가 없을 경우 메시지 표시
+  const emptyMessage =
+    rows.length === 0 ? (
+      <tr>
+        <td colSpan={2} style={{ textAlign: 'center' }}>
+          검색 결과가 없습니다.
+        </td>
+      </tr>
+    ) : null;
+
   return (
     <table>
       <thead>
@@ -40,7 +65,7 @@ function ProductTable({ products, filterText, inStockOnly }: ProductTableProps) 
           <th>Price</th>
         </tr>
       </thead>
-      <tbody>{rows}</tbody>
+      <tbody>{rows.length > 0 ? rows : emptyMessage}</tbody>
     </table>
   );
 }
