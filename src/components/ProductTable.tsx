@@ -5,9 +5,11 @@ import { Product } from '../types/products';
 
 interface ProductTableProps {
   products: Product[];
+  filterText: string;
+  inStockOnly: boolean;
 }
 
-function ProductTable({ products }: ProductTableProps) {
+function ProductTable({ products, filterText, inStockOnly }: ProductTableProps) {
   // 카테고리별로 제품 그룹화
   // products 배열을 카테고리별로 그룹화된 객체로 변환
   const productsByCategory = products.reduce((acc, product) => {
